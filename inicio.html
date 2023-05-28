@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Página de inicio</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+    />
+    <style>
+      .container {
+        margin-top: 50px;
+      }
+
+      .chart-container {
+        width: 300px;
+        height: 300px;
+        display: inline-block;
+        margin-right: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="inicio.html">Inicio</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="planteles.html">Planteles</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="cerrarSesion()"
+                >Cerrar Sesión</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h2>Estado institucional</h2>
+      <p>Cantidad total de estudiantes: <span id="totalStudents"></span></p>
+
+      <div class="chart-container">
+        <h4>Porcentaje de estudiantes con COVID-19</h4>
+        <canvas id="covidChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h4>Porcentaje de estudiantes con ansiedad y depresión</h4>
+        <canvas id="mentalHealthChart"></canvas>
+      </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      // Obtén los datos de los planteles desde el almacenamiento local
+      var plantelData = localStorage.getItem("plantelData");
+      var plantelArray = plantelData ? JSON.parse(plantelData) : [];
+
+      // Calcula el total de estudiantes
+      var totalStudents = plantelArray.reduce(function (total, plantel) {
+        return total + parseInt(plantel.totalEstudiantes);
+      }, 0);
+
+      // Calcula el porcentaje de estudiantes con COVID-19
+      var covidPercentage =
+        (plantelArray.reduce(function (total, plantel) {
+          return total + parseInt(plantel.estudiantesCovid);
+        }, 0) /
+          totalStudents) *
+        100;
+
+      // Calcula el porcentaje de estudiantes con ansiedad y depresión
+      var mentalHealthPercentage =
+        (plantelArray.reduce(function (total, plantel) {
+          return (
+            total +
+            parseInt(plantel.estudiantesAnsiedad + plantel.estudiantesDepresion)
+          );
+        }, 0) /
+          totalStudents) *
+        100;
+
+      // Redondea los porcentajes a dos decimales
+      covidPercentage = Math.round(covidPercentage * 100) / 100;
+      mentalHealthPercentage = Math.round(mentalHealthPercentage * 100) / 100;
+
+      // Actualiza los valores en la página de inicio
+      document.getElementById("totalStudents").textContent = totalStudents;
+
+      // Crea la gráfica del porcentaje de estudiantes con COVID-19
+      new Chart(document.getElementById("covidChart"), {
+        type: "doughnut",
+        data: {
+          labels: ["Con COVID-19", "Sin COVID-19"],
+          datasets: [
+            {
+              data: [covidPercentage, 100 - covidPercentage],
+              backgroundColor: ["#FF6384", "#36A2EB"],
+            },
+          ],
+        },
+      });
+
+      // Crea la gráfica del porcentaje de estudiantes con ansiedad y depresión
+      new Chart(document.getElementById("mentalHealthChart"), {
+        type: "doughnut",
+        data: {
+          labels: ["Con ansiedad y depresión", "Sin ansiedad y depresión"],
+          datasets: [
+            {
+              data: [mentalHealthPercentage, 100 - mentalHealthPercentage],
+              backgroundColor: ["#FFCE56", "#FF6384"],
+            },
+          ],
+        },
+      });
+
+      function cerrarSesion() {
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>

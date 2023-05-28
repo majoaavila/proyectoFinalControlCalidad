@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ver Planteles</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="planteles.html">Planteles</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="registroPlanteles.html"
+                >Registro de planteles</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="estadisticas.html">Estadísticas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="inicio.html">Inicio</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="cerrarSesion()"
+                >Cerrar Sesión</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h2>Planteles</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nombre del Plantel</th>
+            <th>Total de Estudiantes</th>
+            <th>Estudiantes con COVID-19</th>
+            <th>Estudiantes con Ansiedad</th>
+            <th>Estudiantes con Depresión</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="plantelesTableBody">
+          <!-- Los registros de planteles se agregan aquí dinámicamente -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal de edición -->
+    <div class="modal" id="editarModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Plantel</h5>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="nombre" class="form-label"
+                  >Nombre del Plantel</label
+                >
+                <input type="text" class="form-control" id="nombre" />
+              </div>
+              <div class="mb-3">
+                <label for="totalEstudiantes" class="form-label"
+                  >Total de Estudiantes</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="totalEstudiantes"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="estudiantesCovid" class="form-label"
+                  >Estudiantes con COVID-19</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="estudiantesCovid"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="estudiantesAnsiedad" class="form-label"
+                  >Estudiantes con Ansiedad</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="estudiantesAnsiedad"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="estudiantesDepresion" class="form-label"
+                  >Estudiantes con Depresión</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="estudiantesDepresion"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="guardarEdicion()"
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Obtener los datos de los planteles desde el almacenamiento local
+      var plantelData = localStorage.getItem("plantelData");
+      var plantelArray = plantelData ? JSON.parse(plantelData) : [];
+
+      // Mostrar los registros de planteles en la tabla
+      var plantelesTableBody = document.getElementById("plantelesTableBody");
+      for (var i = 0; i < plantelArray.length; i++) {
+        var plantel = plantelArray[i];
+
+        var row = document.createElement("tr");
+        row.innerHTML =
+          "<td>" +
+          plantel.nombre +
+          "</td>" +
+          "<td>" +
+          plantel.totalEstudiantes +
+          "</td>" +
+          "<td>" +
+          plantel.estudiantesCovid +
+          "</td>" +
+          "<td>" +
+          plantel.estudiantesAnsiedad +
+          "</td>" +
+          "<td>" +
+          plantel.estudiantesDepresion +
+          "</td>" +
+          "<td>" +
+          "<button class='btn btn-primary btn-sm' onclick='editarPlantel(" +
+          i +
+          ")'>Editar</button>" +
+          "<button class='btn btn-danger btn-sm' onclick='eliminarPlantel(" +
+          i +
+          ")'>Eliminar</button>" +
+          "</td>";
+
+        plantelesTableBody.appendChild(row);
+      }
+
+      // Variables para almacenar los datos del plantel que se está editando
+      var indiceEdicion;
+      var plantelEditado = {};
+
+      // Función para editar un plantel
+      function editarPlantel(index) {
+        // Guardar el índice del plantel que se está editando
+        indiceEdicion = index;
+
+        // Obtener el plantel correspondiente al índice
+        var plantel = plantelArray[index];
+
+        // Llenar el formulario del modal con los datos del plantel
+        document.getElementById("nombre").value = plantel.nombre;
+        document.getElementById("totalEstudiantes").value =
+          plantel.totalEstudiantes;
+        document.getElementById("estudiantesCovid").value =
+          plantel.estudiantesCovid;
+        document.getElementById("estudiantesAnsiedad").value =
+          plantel.estudiantesAnsiedad;
+        document.getElementById("estudiantesDepresion").value =
+          plantel.estudiantesDepresion;
+
+        // Mostrar el modal de edición
+        var editarModal = new bootstrap.Modal(
+          document.getElementById("editarModal")
+        );
+        editarModal.show();
+      }
+
+      // Función para guardar la edición del plantel
+      function guardarEdicion() {
+        // Obtener los nuevos valores del formulario
+        var nombre = document.getElementById("nombre").value;
+        var totalEstudiantes =
+          document.getElementById("totalEstudiantes").value;
+        var estudiantesCovid =
+          document.getElementById("estudiantesCovid").value;
+        var estudiantesAnsiedad = document.getElementById(
+          "estudiantesAnsiedad"
+        ).value;
+        var estudiantesDepresion = document.getElementById(
+          "estudiantesDepresion"
+        ).value;
+
+        // Actualizar los datos del plantel en el array
+        var plantelEditado = {
+          nombre: nombre,
+          totalEstudiantes: totalEstudiantes,
+          estudiantesCovid: estudiantesCovid,
+          estudiantesAnsiedad: estudiantesAnsiedad,
+          estudiantesDepresion: estudiantesDepresion,
+        };
+        plantelArray[indiceEdicion] = plantelEditado;
+
+        // Actualizar el almacenamiento local con el nuevo array de planteles
+        localStorage.setItem("plantelData", JSON.stringify(plantelArray));
+
+        // Recargar la página para reflejar los cambios
+        location.reload();
+      }
+
+      // Función para eliminar un plantel
+      function eliminarPlantel(index) {
+        if (confirm("¿Estás seguro de que deseas eliminar este plantel?")) {
+          plantelArray.splice(index, 1); // Eliminar el plantel del array
+          localStorage.setItem("plantelData", JSON.stringify(plantelArray)); // Actualizar el almacenamiento local
+          location.reload(); // Recargar la página para reflejar los cambios
+        }
+      }
+
+      function cerrarSesion() {
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>

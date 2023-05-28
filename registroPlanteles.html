@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Registro de Planteles</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="registroPlanteles.html"
+          >Registro de planteles</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="planteles.html">Planteles</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="inicio.html">Inicio</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="cerrarSesion()"
+                >Cerrar Sesión</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h2>Registro de Planteles</h2>
+      <form id="registroForm">
+        <div class="mb-3">
+          <label for="nombrePlantel" class="form-label"
+            >Nombre del Plantel:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="nombrePlantel"
+            placeholder="Ingrese el nombre del plantel"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="totalEstudiantes" class="form-label"
+            >Total de Estudiantes:</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="totalEstudiantes"
+            placeholder="Ingrese el total de estudiantes"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="estudiantesCovid" class="form-label"
+            >Estudiantes con COVID-19:</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="estudiantesCovid"
+            placeholder="Ingrese la cantidad de estudiantes con COVID-19"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="estudiantesAnsiedad" class="form-label"
+            >Estudiantes con Ansiedad:</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="estudiantesAnsiedad"
+            placeholder="Ingrese la cantidad de estudiantes con ansiedad"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="estudiantesDepresion" class="form-label"
+            >Estudiantes con Depresión:</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="estudiantesDepresion"
+            placeholder="Ingrese la cantidad de estudiantes con depresión"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Registrar</button>
+      </form>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document
+        .getElementById("registroForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Evitar que se envíe el formulario
+
+          // Obtener los valores del formulario
+          var nombrePlantel = document.getElementById("nombrePlantel").value;
+          var totalEstudiantes =
+            document.getElementById("totalEstudiantes").value;
+          var estudiantesCovid =
+            document.getElementById("estudiantesCovid").value;
+          var estudiantesAnsiedad = document.getElementById(
+            "estudiantesAnsiedad"
+          ).value;
+          var estudiantesDepresion = document.getElementById(
+            "estudiantesDepresion"
+          ).value;
+
+          // Crear un objeto para almacenar los datos del plantel
+          var plantel = {
+            nombre: nombrePlantel,
+            totalEstudiantes: totalEstudiantes,
+            estudiantesCovid: estudiantesCovid,
+            estudiantesAnsiedad: estudiantesAnsiedad,
+            estudiantesDepresion: estudiantesDepresion,
+          };
+
+          // Guardar los datos del plantel en el almacenamiento local (puedes usar una base de datos en su lugar)
+          var plantelData = localStorage.getItem("plantelData");
+          var plantelArray = plantelData ? JSON.parse(plantelData) : [];
+          plantelArray.push(plantel);
+          localStorage.setItem("plantelData", JSON.stringify(plantelArray));
+
+          // Redireccionar a la vista "Ver Planteles"
+          window.location.href = "planteles.html";
+        });
+
+      function cerrarSesion() {
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>

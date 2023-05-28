@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container login-container">
+        <h2>Iniciar sesión</h2>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Nombre de usuario:</label>
+                <input type="text" class="form-control" id="username" placeholder="Ingrese su nombre de usuario">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña:</label>
+                <input type="password" class="form-control" id="password" placeholder="Ingrese su contraseña">
+            </div>
+            <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+        </form>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evitar que se envíe el formulario
+
+            // Obtener los valores de los campos de entrada
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            // Verificar las credenciales del administrador
+            if (username === "admin" && password === "admin1234") {
+                // Credenciales válidas, redireccionar a la página de inicio
+                window.location.href = "inicio.html";
+            } else {
+                // Credenciales inválidas, mostrar mensaje de error
+                alert("Credenciales incorrectas. Inténtalo de nuevo.");
+            }
+        });
+    </script>
+</body>
+</html>
